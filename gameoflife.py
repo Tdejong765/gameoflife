@@ -6,6 +6,7 @@ clock = pygame.time.Clock()
 BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 boardArr = []
+newArr = []
 windowHeight = 400
 windowWidth = 400
 blockSize = 20
@@ -16,7 +17,7 @@ def drawGrid():
     for x in range(0, windowWidth, blockSize):
         for y in range(0, windowHeight, blockSize):  
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(SCREEN, WHITE, rect, 1)
+            pygame.draw.rect(SCREEN, BLACK, rect, 1)
 
 
 
@@ -50,8 +51,10 @@ def initBoardArr():
 
     for i in range(colW):
         boardArr.append([])
+        newArr.append([])
         for j in range(rowH):
             boardArr[i].append(0)
+            newArr[i].append(0)
 
 
 #Count number of neigbours of a cell
@@ -94,25 +97,41 @@ def countNeighbours(array, i, j):
 
 def Update(array, i, j):
 
-    count = countNeighbours(array, i, j)
+    # #apply rules
+    # if (array[i][j] == 1 and count <2):
+    #     array[i][j] == 0
+    #     drawBlockBlack(i, j)
 
-    #apply rules
-    if (array[i][j] == 1 and count <2):
-        array[i][j] == 0
-        drawBlockBlack(i, j)
+    # if (array[i][j] == 1 and count == 2 or count == 3):
+    #     array[i][j] == 1
+    #     drawBlockWhite(i, j)
 
-    if (array[i][j] == 1 and count == 2 or count == 3):
-        array[i][j] == 1
-        drawBlockWhite(i, j)
+    # if (array[i][j] == 1 and count > 3):
+    #     array[i][j] == 0
+    #     drawBlockBlack(i, j)
 
-    if (array[i][j] == 1 and count > 3):
-        array[i][j] == 0
-        drawBlockBlack(i, j)
+    # if (array[i][j] == 0 and count == 3):
+    #     array[i][j] == 1
+    #     drawBlockWhite(i, j)
 
-    if (array[i][j] == 0 and count == 3):
-        array[i][j] == 1
-        drawBlockWhite(i, j)
+    for row in range(i):
+        for col in range(j):
+            # Get the number of live cells adjacent to the cell at grid[row][col]
+            live_neighbors = countNeighbours(array, i, j)
 
+            # If the number of surrounding live cells is < 2 or > 3 then we make the cell at grid[row][col] a dead cell
+            if live_neighbors < 2 or live_neighbors > 3:
+                newArr[row][col] = 0
+                drawBlockBlack(row, col)
+
+            # If the number of surrounding live cells is 3 and the cell at grid[row][col] was previously dead then make
+            # the cell into a live cell
+            elif live_neighbors == 3 and boardArr[row][col] == 0:
+                newArr[row][col] = 1
+                drawBlockWhite(row, col)
+            # If the number of surrounding live cells is 3 and the cell at grid[row][col] is alive keep it alive
+            else:
+                newArr[row][col] = boardArr[row][col]
 
 
 

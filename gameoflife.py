@@ -95,7 +95,7 @@ def countNeighbours(array, i, j):
 
 
 
-def Update(array, i, j):
+def Update(boardArr, newArr, i, j):
 
     # #apply rules
     # if (array[i][j] == 1 and count <2):
@@ -117,7 +117,7 @@ def Update(array, i, j):
     for row in range(i):
         for col in range(j):
             # Get the number of live cells adjacent to the cell at grid[row][col]
-            live_neighbors = countNeighbours(array, i, j)
+            live_neighbors = countNeighbours(boardArr, i, j)
 
             # If the number of surrounding live cells is < 2 or > 3 then we make the cell at grid[row][col] a dead cell
             if live_neighbors < 2 or live_neighbors > 3:
@@ -152,7 +152,7 @@ def main():
 
     while True:
         drawGrid()
-        Update(boardArr, 2, 3)
+        Update(boardArr, newArr, 2, 3)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
